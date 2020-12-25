@@ -72,6 +72,31 @@ public class BinarySearchTree {
         else parent.setLeft(node);
         return root;
     }
+
+    public BinarySearchTreeNode delete(BinarySearchTreeNode root, int data){
+        if(root == null) return null;
+        if(data < root.getData()) {
+             root.setLeft(delete(root.getLeft(), data)); 
+        } else if(data > root.getData()){
+            root.setRight(delete(root.getRight(), data));
+        } else {
+            // Case 1: both chile nodes present
+            if(root.getLeft() != null && root.getRight() != null){
+                BinarySearchTreeNode minimum = findMinimum(root.getRight());
+                root.setData(minimum.getData());
+                root.setRight(delete(root.getRight(), minimum.getData()));
+            } // Case 2: one child 
+            else if(root.getLeft() != null){
+                root = root.getLeft();
+            } else if(root.getRight() != null){
+                root = root.getRight();
+            } // Case 3: leaf node 
+            else {
+                root = null;
+            }
+        }
+        return root;
+    }
 }
 
 class BinarySearchTreeNode {
