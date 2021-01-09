@@ -91,6 +91,41 @@ public class BinaryTree {
         
         return result;
     }
+
+    public BinaryTreeNode lowestCommonAncestor(BinaryTreeNode root, BinaryTreeNode node1, BinaryTreeNode node2){
+        if(root == null) return null;
+        if(root.getData() == node1.getData() || root.getData() == node2.getData()) return root;
+        BinaryTreeNode left = lowestCommonAncestor(root.getLeft(), node1, node2);
+        BinaryTreeNode right = lowestCommonAncestor(root.getRight(), node1, node2);
+        if(left != null && right != null) return root;
+        if(left == null && right == null) return null;
+        return left != null ? left : right;
+    }
+
+    public int largestBinarySearchTreeInBinaryTree(BinaryTreeNode root){
+        MinMax largestBinarySearchTree = largest(root);
+        return largestBinarySearchTree.size;
+    }
+
+    private MinMax largest(BinaryTreeNode root){
+        MinMax data = new MinMax();
+        if(root != null){
+            MinMax left = largest(root.getLeft());
+            MinMax right = largest(root.getRight());
+    
+            if(!left.isBst || !right.isBst || left.max > root.getData() || right.min <= root.getData()){
+                data.isBst = false;
+                data.size = Math.max(left.size, right.size);
+            }
+    
+            data.isBst = true;
+            data.size = left.size + right.size + 1;
+            data.min = root.getLeft() != null ? left.min : root.getData();
+            data.max = root.getRight() != null ? right.max : root.getData();    
+        }
+        
+        return data;
+    }
 }
 
 class BinaryTreeNode {
@@ -125,5 +160,19 @@ class BinaryTreeNode {
 
     public void setRight(BinaryTreeNode node){
         this.right = node;
+    }
+}
+
+class MinMax {
+    public boolean isBst;
+    public int size;
+    public int min;
+    public int max;
+
+    public MinMax(){
+        isBst = true;
+        size = 0;
+        min = Integer.MAX_VALUE;
+        max = Integer.MIN_VALUE;
     }
 }
